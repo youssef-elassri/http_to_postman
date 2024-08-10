@@ -1,13 +1,13 @@
 package models
 
 type Header struct {
-	key   string
-	value string
+	Key   string
+	Value string
 }
 type Request struct {
-	description string
-	method      string
-	url         string
-	headers     []Header
-	body        string
+	Description string
+	Method      string
+	Url         string
+	Headers     []Header
+	Body        string
 }

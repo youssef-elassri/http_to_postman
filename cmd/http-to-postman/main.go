@@ -1,6 +1,5 @@
 package main
 
-import "C"
 import (
 	P "http-to-postman/pkg/parser"
 	U "http-to-postman/pkg/utils"
@@ -17,6 +16,9 @@ func main() {
 	httpFile := "/Users/imediadevice/Desktop/open-source/http-to-postman/cmd/http-to-postman/test.http"
 
 	content, _ := U.ReadHttpFile(httpFile)
-	P.ParseHttpContent(content)
+	_, err := P.ParseHttpContent(content)
+	if err != nil {
+		return
+	}
 
 }
