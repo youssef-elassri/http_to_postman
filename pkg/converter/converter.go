@@ -45,6 +45,11 @@ func httpRequestToPostmanRequest(request models.Request) models.PostmanRequest {
 	postmanBody := models.PostmanBody{
 		Mode: "raw", // TODO: Support other modes
 		Raw:  request.Body,
+		Options: models.PostmanBodyOptions{
+			Raw: models.PostmanBodyOptionsRaw{
+				Language: "json",
+			},
+		},
 	}
 
 	return models.PostmanRequest{

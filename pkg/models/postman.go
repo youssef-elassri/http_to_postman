@@ -27,9 +27,18 @@ type PostmanHeader struct {
 	Value string `json:"value"`
 }
 
+type PostmanBodyOptionsRaw struct {
+	Language string `json:"language"`
+}
+
+type PostmanBodyOptions struct {
+	Raw PostmanBodyOptionsRaw `json:"raw"`
+}
+
 type PostmanBody struct {
-	Mode string `json:"mode"`
-	Raw  string `json:"raw"`
+	Mode    string             `json:"mode"`
+	Raw     string             `json:"raw"`
+	Options PostmanBodyOptions `json:"options"`
 }
 
 type PostmanURL struct {
