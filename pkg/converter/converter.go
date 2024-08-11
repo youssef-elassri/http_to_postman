@@ -2,6 +2,7 @@ package converter
 
 import (
 	"http-to-postman/pkg/models"
+	"strings"
 )
 
 func ConvertToPostmanCollection(requests []models.Request) models.PostmanCollection {
@@ -30,9 +31,7 @@ func httpRequestsToPostmanItems(requests []models.Request) []models.PostmanItem 
 
 func httpRequestToPostmanRequest(request models.Request) models.PostmanRequest {
 
-	postmanUrl := models.PostmanURL{
-		Raw: request.Url,
-	}
+	postmanUrl := httpRequestUrlToPostmanUrl(request.Url)
 
 	var postmanHeaders []models.PostmanHeader
 	for _, header := range request.Headers {
@@ -45,6 +44,11 @@ func httpRequestToPostmanRequest(request models.Request) models.PostmanRequest {
 	postmanBody := models.PostmanBody{
 		Mode: "raw", // TODO: Support other modes
 		Raw:  request.Body,
+		Options: models.PostmanBodyOptions{
+			Raw: models.PostmanBodyOptionsRaw{
+				Language: "json",
+			},
+		},
 	}
 
 	return models.PostmanRequest{
@@ -54,4 +58,26 @@ func httpRequestToPostmanRequest(request models.Request) models.PostmanRequest {
 		Body:   postmanBody,
 	}
 
+}
+
+func httpRequestUrlToPostmanUrl(url string) models.PostmanURL {
+	protocolAndRest := strings.SplitN(url, "://", 2)
+	protocol := protocolAndRest[0]
+
+	hostAndPath := strings.SplitN(protocolAndRest[1], "/", 2)
+	host := hostAndPath[0]
+
+	var paths []string
+	if len(hostAndPath) > 1 {
+		paths = strings.Split(hostAndPath[1], "/")
+	}
+
+	hosts := strings.Split(host, ".")
+
+	return models.PostmanURL{
+		Raw:      url,
+		Protocol: protocol,
+		Path:     paths,
+		Host:     hosts,
+	}
 }
