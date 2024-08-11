@@ -42,7 +42,8 @@ type PostmanBody struct {
 }
 
 type PostmanURL struct {
-	Raw  string   `json:"raw"`
-	Host []string `json:"host"`
-	Path []string `json:"path"`
+	Raw      string   `json:"raw"`
+	Protocol string   `json:"protocol"`
+	Host     []string `json:"host"`
+	Path     []string `json:"path"`
 }
