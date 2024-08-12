@@ -12,9 +12,9 @@ import (
 
 func main() {
 
-	httpFile := flag.String("http", "", "Path to the HTTP file")
-	outputFile := flag.String("output", "postman_collection.json", "Path to the output file")
-	help := flag.Bool("help", false, "Display help message")
+	httpFile := flag.String("i", "", "Path to the HTTP file")
+	outputFile := flag.String("o", "postman_collection.json", "Path to the output file")
+	help := flag.Bool("h", false, "Display help message")
 
 	flag.Parse()
 
@@ -36,8 +36,6 @@ func main() {
 	}
 
 	collection := converter.ConvertToPostmanCollection(requests)
-
-	// outputFile := strings.Split(httpFile, ".")[0] + ".json"
 
 	err = exporter.ExportPostmanCollections(collection, *outputFile)
 	if err != nil {

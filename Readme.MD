@@ -39,9 +39,9 @@ This will generate an executable file named `http-to-postman`.
 
 The tool accepts the following command-line arguments:
 
-- `-http`: Path to the input `.HTTP` file. **(Required)**
-- `-output`: Path to the output Postman collection file (JSON format). Default is `postman_collection.json`.
-- `-help`: Displays the help message.
+- `-i`: Path to the input `.HTTP` file. **(Required)**
+- `-o`: Path to the output Postman collection file (JSON format). Default is `postman_collection.json`.
+- `-h`: Displays the help message.
 
 ### Examples
 
