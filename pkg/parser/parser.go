@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"http-to-postman/pkg/models"
 	"strings"
 )
@@ -8,34 +9,68 @@ import (
 func ParseHttpContent(content string) ([]models.Request, error) {
 	var requests []models.Request
 	rawRequests := strings.Split(content, "###")
-
 	for _, rawRequest := range rawRequests {
-		lines := strings.Split(rawRequest, "\n")
-		var headers []models.Header
-		if len(lines) < 2 {
+		if strings.TrimSpace(rawRequest) == "" {
 			continue
 		}
-		desc := lines[0]
-		method := strings.Split(lines[1], " ")[0]
-		url := strings.Split(lines[1], " ")[1]
+		lines := sanitizeLines(strings.Split(rawRequest, "\n"))
+		desc, method, url := parseDescAndMethodAndUrl(lines)
+		headers, body := parseHeadersAndBody(lines[2:])
 
-		if len(lines) >= 3 {
-			for _, line := range lines[2:] {
-				if strings.Contains(line, "{") {
-					break
-				}
-				if strings.Contains(line, ":") {
-					var keyValueArray = strings.Split(line, ":")
-					headers = append(headers, models.Header{Key: keyValueArray[0], Value: keyValueArray[1]})
-				}
-
-			}
-		}
-		body := strings.Join(lines[2+len(headers)+1:], "\n")
 		requests = append(requests, models.Request{Description: desc, Method: method, Url: url, Headers: headers, Body: body})
 
 	}
 
 	return requests, nil
 
+}
+
+func sanitizeLines(lines []string) []string {
+	var sanitized []string
+	for _, line := range lines {
+		trimmedLine := strings.TrimSpace(line)
+		if trimmedLine != "" {
+			sanitized = append(sanitized, trimmedLine)
+		}
+	}
+	return sanitized
+}
+
+func parseDescAndMethodAndUrl(lines []string) (string, string, string) {
+	if len(lines) < 2 {
+		panic(errors.New("must have at least two lines"))
+	}
+	desc := lines[0]
+	methodAndUrl := strings.Split(lines[1], " ")
+
+	return desc, methodAndUrl[0], methodAndUrl[1]
+}
+
+func parseHeadersAndBody(lines []string) ([]models.Header, string) {
+	var headers []models.Header
+	for _, line := range lines {
+		if strings.Contains(line, "{") {
+			break
+		}
+		if strings.Contains(line, ":") {
+			var keyValueArray = strings.Split(line, ":")
+			headers = append(headers, models.Header{Key: keyValueArray[0], Value: keyValueArray[1]})
+		}
+
+	}
+
+	var bodyLines []string
+
+	for _, line := range lines[len(headers):] {
+		if strings.Contains(line, "}") {
+			bodyLines = append(bodyLines, line)
+			break
+		}
+		bodyLines = append(bodyLines, line)
+
+	}
+
+	body := strings.Join(bodyLines, "\n")
+
+	return headers, body
 }
