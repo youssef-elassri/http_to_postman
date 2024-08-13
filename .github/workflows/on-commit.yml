@@ -10,7 +10,7 @@ on:
       - development
 
 jobs:
-  go-fmt:
+  on-commit:
     runs-on: ubuntu-latest
 
     steps:
