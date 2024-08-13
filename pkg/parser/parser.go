@@ -54,7 +54,9 @@ func parseHeadersAndBody(lines []string) ([]models.Header, string) {
 		}
 		if strings.Contains(line, ":") {
 			var keyValueArray = strings.Split(line, ":")
-			headers = append(headers, models.Header{Key: keyValueArray[0], Value: keyValueArray[1]})
+			TrimmedKey := strings.TrimSpace(keyValueArray[0])
+			TrimmedValue := strings.TrimSpace(keyValueArray[1])
+			headers = append(headers, models.Header{Key: TrimmedKey, Value: TrimmedValue})
 		}
 
 	}
